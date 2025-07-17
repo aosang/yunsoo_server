@@ -1,8 +1,9 @@
 const { createClient } = require('@supabase/supabase-js')
+require('dotenv').config()
 
-// 替换为你自己的 Supabase 项目配置
-const supabaseUrl = 'https://ctfrp48g91ht4obgh0u0.baseapi.memfiredb.com'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzMxMTEyNzQ0MSwiaWF0IjoxNzM0MzI3NDQxLCJpc3MiOiJzdXBhYmFzZSJ9.WACMGD6elHIwdTVXl8damAk9mz2uhjfs170FHOO0KcI'
+// 从环境变量获取 Supabase 配置
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_ANON_KEY
 
 const supabase = createClient(supabaseUrl, supabaseKey)
 

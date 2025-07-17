@@ -2,22 +2,15 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const cors = require("cors");
-const supabase = require("./supabase");
+const router = require("./router/router");
 
 // app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // 查询数据
-app.get("/message", async (req, res) => {
-  const { data, error } = await supabase.from("test_table").select("*");
-  if (error) {
-    res.status(500).send(error);
-  } else {
-    res.json(data);
-  }
-})
+app.use(router);
 
-app.listen(port, '192.168.8.5', () => {
+app.listen(port, '192.168.120.233', () => {
   console.log(`Server is running on port ${port}`)
 })
