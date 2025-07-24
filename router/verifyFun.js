@@ -21,7 +21,7 @@ const verifyToken = async (req, res, next) => {
     if (error) {
       return res.status(402).json({
         code: 402,
-        message: 'token无效，请重新登录',
+        message: '请重新登录',
         data: error
       });
     }

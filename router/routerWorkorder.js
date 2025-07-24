@@ -5,8 +5,9 @@ const { verifyToken } = require("./verifyFun")
 
 // 获取工单数据
 router.get('/GetWorkorder', verifyToken, async (req,  res) => {
-  const { userId, tabId } = req.query
   
+  const { userId, tabId } = req.query
+
   // 构建查询
   let query = supabase.from('work_order_cn')
     .select('*')

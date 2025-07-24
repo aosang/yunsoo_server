@@ -4,7 +4,11 @@ const router = express.Router()
 const { verifyToken } = require("./verifyFun")
 
 router.get('/Profile', verifyToken, async (req, res) => {
-  const { data, error } = await supabase.from('profiles').select('*')
+  const { user_id } = req.query
+  const { data, error } = await supabase.from('profiles')
+  .select('*')
+  .eq('id', user_id)
+
   if (error) {
     res.json({
       code: 400,
