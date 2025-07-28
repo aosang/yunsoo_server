@@ -5,7 +5,6 @@ const { verifyToken } = require("./verifyFun")
 
 // 获取工单数据
 router.get('/GetWorkorder', verifyToken, async (req,  res) => {
-  
   const { userId, tabId } = req.query
 
   // 构建查询
@@ -49,6 +48,42 @@ router.get('/GetWorkorder', verifyToken, async (req,  res) => {
       data: error
     })
   } else {
+    res.json({
+      code: 200,
+      message: '获取数据成功',
+      data: data
+    })
+  }
+})
+
+// 获取设备
+router.get('/GetDevice', verifyToken, async (req, res) => {
+  const { data, error } = await supabase.from('it_assets_cn').select('*')
+  if (error) {
+    res.json({
+      code: 400,
+      message: '获取数据失败',
+      data: error
+    })
+  }else {
+    res.json({
+      code: 200,
+      message: '获取数据成功',
+      data: data
+    })
+  }
+})
+
+// 获取状态
+router.get('/GetStatus', verifyToken, async (req, res) => {
+  const { data, error } = await supabase.from('product_status_cn').select('*')
+  if (error) {
+    res.json({
+      code: 400,
+      message: '获取数据失败',
+      data: error
+    })
+  }else {
     res.json({
       code: 200,
       message: '获取数据成功',
