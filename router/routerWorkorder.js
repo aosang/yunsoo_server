@@ -22,7 +22,7 @@ router.get('/GetWorkorder', verifyToken, async (req,  res) => {
     let statusValue
     switch (tabId) {
       case '1':
-        statusValue = '已完成'
+        statusValue = '已解决'
         break
       case '2':
         statusValue = '处理中'
@@ -40,7 +40,6 @@ router.get('/GetWorkorder', verifyToken, async (req,  res) => {
   }
   
   const { data, error } = await query
-  
   if (error) {
     res.json({
       code: 400,
@@ -88,6 +87,83 @@ router.get('/GetStatus', verifyToken, async (req, res) => {
       code: 200,
       message: '获取数据成功',
       data: data
+    })
+  }
+})
+
+// 新增工单
+router.post('/AddWorkorder', verifyToken, async (req, res) => {
+  const {id, created_id, created_name, created_product, created_status, created_time, created_update, created_remark, created_type, created_brand, created_solved, created_text } = req.body
+    const { data, error } = await supabase.from('work_order_cn').insert({
+      id,
+      created_id,
+      created_name,    
+      created_product,
+      created_status,
+      created_time,
+      created_update,
+      created_remark,
+      created_type,
+      created_brand,
+      created_solved,
+      created_text
+    })
+    if (error) {
+      res.json({
+        code: 400,
+        message: '新增数据失败',
+        data: error
+      })
+    }else {
+      res.json({
+        code: 200,
+        message: '新增数据成功',
+        data: data
+      })
+    }
+})
+
+// 删除工单
+router.post('/DeleteWorkorder', verifyToken, async (req, res) => {
+  const { delId } = req.body
+  
+  const { data, error } = await supabase
+    .from('work_order_cn')
+    .delete()
+    .eq('created_id', delId)
+
+  if (error) {
+    res.json({
+      code: 400,
+      message: '删除数据失败',
+      data: error
+    })
+  }else {
+    res.json({
+      code: 200,
+      message: '删除数据成功',
+      data: data
+    })
+  }
+})
+
+// 获取工单详情
+router.get('/GetWorkorderDetail', verifyToken, async (req, res) => {
+  const { workDetailId } = req.query
+  const { data, error } = await supabase.from('work_order_cn')
+    .select('*')
+    .eq('created_id', workDetailId)
+  if (error) {
+    res.json({
+      code: 400,
+      message: '获取数据失败',
+      data: error 
+    })
+  }else {
+    res.json({
+      code: 200,
+      message: '获取数据成功',
+      data: data  
     })
   }
 })
