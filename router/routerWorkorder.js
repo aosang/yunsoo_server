@@ -168,6 +168,34 @@ router.get('/GetWorkorderDetail', verifyToken, async (req, res) => {
   }
 })
 
+// 更新数据
+router.post('/UpdateWorkorder', verifyToken, async (req, res) => { 
+  const {created_id, created_status, created_update, created_solved, created_text, created_remark} = req.body
+  
+  const { data, error } = await supabase.from('work_order_cn')
+    .update({
+      created_status,
+      created_update,
+      created_solved,
+      created_text,
+      created_remark
+    })
+    .eq('created_id', created_id)
+  if (error) {
+    res.json({
+      code: 400,
+      message: '更新数据失败',
+      data: error
+    })
+  }else {
+    res.json({
+      code: 200,
+      message: '更新数据成功',
+      data: data
+    })
+  }
+})
+
 // 测试数据
 router.get('/Test', (req, res) => {
   res.json({
