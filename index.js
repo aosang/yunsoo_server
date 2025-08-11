@@ -2,10 +2,11 @@ const express = require("express")
 const app = express()
 const port = 3000
 
-const cors = require("cors");
+const cors = require("cors")
 const routerLogin = require("./router/routerLogin")
 const routerWorkorder = require("./router/routerWorkorder")
 const routerProfile = require("./router/routerProfile")
+const routerLibrary = require("./router/routerLibrary")
 
 // 获取本机IPv4地址的函数
 function getLocalIPv4Address() {
@@ -31,6 +32,7 @@ app.use(cors())
 app.use(routerLogin)
 app.use(routerWorkorder)
 app.use(routerProfile)
+app.use(routerLibrary)
 
 const localIP = getLocalIPv4Address();
 app.listen(port, localIP, () => {
