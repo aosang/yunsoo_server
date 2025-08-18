@@ -24,4 +24,27 @@ router.get("/Library", verifyToken, async (req, res) => {
   }
 })
 
+// 获取详情
+router.get('/LibraryDetail', verifyToken, async (req, res) => {
+  const { libraryId } = req.query
+
+  const { data, error } = await supabase.from('library_table_cn')
+    .select('*')
+    .eq('created_id', libraryId)
+
+  if (error) {
+    res.json({
+      code: 400,
+      message: '获取数据失败',
+      data: error
+    })
+  } else {
+    res.json({
+      code: 200,
+      message: '获取数据成功',
+      data: data
+    })
+  }
+})
+
 module.exports = router

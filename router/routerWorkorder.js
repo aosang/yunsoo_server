@@ -93,7 +93,20 @@ router.get('/GetStatus', verifyToken, async (req, res) => {
 
 // 新增工单
 router.post('/AddWorkorder', verifyToken, async (req, res) => {
-  const {id, created_id, created_name, created_product, created_status, created_time, created_update, created_remark, created_type, created_brand, created_solved, created_text } = req.body
+  const {
+    id, 
+    created_id, 
+    created_name, 
+    created_product, 
+    created_status, 
+    created_time, 
+    created_update, 
+    created_remark, 
+    created_type, 
+    created_brand, 
+    created_solved, 
+    created_text 
+  } = req.body
     const { data, error } = await supabase.from('work_order_cn').insert({
       id,
       created_id,
