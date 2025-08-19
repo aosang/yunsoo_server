@@ -4,7 +4,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "NODE_NO_WARNINGS=1 nodemon index.js",
+    "start:no-warnings": "NODE_NO_WARNINGS=1 nodemon index.js",
+    "start:suppress-punycode": "node --no-deprecation index.js",
+    "start:verbose": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
