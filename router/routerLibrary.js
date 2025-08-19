@@ -47,4 +47,27 @@ router.get('/LibraryDetail', verifyToken, async (req, res) => {
   }
 })
 
+// 删除知识库
+router.post('/deleteLibrary', verifyToken, async (req, res) => {
+  const { libraryId } = req.body
+
+  const { data, error } = await supabase.from('library_table_cn')
+  .delete()
+  .eq('created_id', libraryId)
+
+  if (error) {
+    res.json({
+      code: 400,
+      message: '删除失败',
+      data: error
+    })
+  } else {
+    res.json({
+      code: 200,
+      message: '删除成功',
+      data: data
+    })
+  }
+})
+
 module.exports = router
