@@ -10,7 +10,7 @@ const verifyToken = async (req, res, next) => {
         code: 401,
         message: '缺少认证token',
         data: null
-      });
+      })
     }
 
     // 移除Bearer前缀（如果存在）
@@ -23,11 +23,10 @@ const verifyToken = async (req, res, next) => {
         code: 402,
         message: '请重新登录',
         data: error
-      });
+      })
     }
 
     // 将用户信息添加到请求对象中，供后续路由使用
-    
     req.user = data.user;
     next();
   } catch (error) {

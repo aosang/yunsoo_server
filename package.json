@@ -4,9 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_NO_WARNINGS=1 nodemon index.js",
-    "start:no-warnings": "NODE_NO_WARNINGS=1 nodemon index.js",
-    "start:suppress-punycode": "node --no-deprecation index.js",
+    "start": "cross-env NODE_NO_WARNINGS=1 nodemon index.js",
+    "start:no-warnings": "cross-env NODE_NO_WARNINGS=1 nodemon index.js",
+    "start:suppress-punycode": "cross-env NODE_NO_WARNINGS=1 node --no-deprecation index.js",
     "start:verbose": "nodemon index.js"
   },
   "keywords": [],
@@ -19,5 +19,8 @@
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "nodemon": "^3.1.10"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }
