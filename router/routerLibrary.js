@@ -70,4 +70,27 @@ router.post('/deleteLibrary', verifyToken, async (req, res) => {
   }
 })
 
+// 新增知识库上传图片
+router.post('/uploadLibraryImage',  async (req, res) => {
+  console.log(req);
+  
+  // const { data, error } = await supabase.storage
+  //   .from('knowledge_image')
+  //   .upload(imageFilePath, fileType)
+
+  // if (error) {
+  //   res.json({
+  //     code: 400,
+  //     message: '上传失败',
+  //     data: error
+  //   })
+  // } else {
+  //   res.json({
+  //     code: 200,
+  //     message: '上传成功',
+  //     data: data
+  //   })
+  // }
+})
+
 module.exports = router
