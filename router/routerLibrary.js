@@ -2,6 +2,7 @@ const express = require("express");
 const supabase = require("../supabase");
 const router = express.Router()
 const { verifyToken } = require("./verifyFun")
+const multer = require("multer")
 
 router.get("/Library", verifyToken, async (req, res) => {
   const { userId } = req.query
@@ -12,13 +13,13 @@ router.get("/Library", verifyToken, async (req, res) => {
   if (error) {
     res.json({
       code: 400,
-      message: '获取用户信息失败',
+      message: '获取数据失败',
       data: error
     })
   } else {
     res.json({
       code: 200,
-      message: '获取用户信息成功',
+      message: '获取数据成功',
       data: data
     })
   }
@@ -71,26 +72,93 @@ router.post('/deleteLibrary', verifyToken, async (req, res) => {
 })
 
 // 新增知识库上传图片
-router.post('/uploadLibraryImage',  async (req, res) => {
-  console.log(req);
-  
-  // const { data, error } = await supabase.storage
-  //   .from('knowledge_image')
-  //   .upload(imageFilePath, fileType)
+const storage = multer.memoryStorage()
+const fileFilter = (req, file, cb) => {
+  const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+  if (allowedMimeTypes.includes(file.mimetype)) {
+    cb(null, true)
+  } else {
+    cb(new Error('仅允许上传图片文件！'), false)
+  }
+}
 
-  // if (error) {
-  //   res.json({
-  //     code: 400,
-  //     message: '上传失败',
-  //     data: error
-  //   })
-  // } else {
-  //   res.json({
-  //     code: 200,
-  //     message: '上传成功',
-  //     data: data
-  //   })
-  // }
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter, // 使用文件类型验证
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 限制文件大小为 10MB
+  }
 })
 
+
+router.post('/uploadLibraryImage', verifyToken, upload.single('file'),  async (req, res) => {
+  const { file } = req
+  console.log(file)
+  if (!file) {
+    return res.status(400).json({
+      code: 400,
+      message: '未找到上传的文件'
+    })
+  }
+
+  try {
+    const imageFilePath = `${file.originalname}`
+    const fileType = file.mimetype
+
+    const { data, error } = await supabase.storage
+    .from('knowledge_image')
+    .upload(imageFilePath, file.buffer, {
+      cacheControl: '3600',
+      upsert: true,
+      contentType: fileType
+    })
+    
+    if (error) {
+      res.json({
+        code: 400,
+        message: '上传失败',
+        data: error.message || error
+      })
+    }else {
+      // 获取图片的URL
+      const { data: { publicUrl } } = supabase.storage
+      .from('knowledge_image')
+      .getPublicUrl(imageFilePath)
+
+      res.json({
+        code: 200,
+        message: '上传成功',
+        data: {
+          url: publicUrl
+        }
+      })
+    }      
+  } catch (error) {
+    res.json({
+      code: 500,
+      message: '上传失败',
+      data: error.message || error
+    })
+  }
+})
+
+// 获取类型
+router.get('/getLibraryType', verifyToken, async (req, res) => {
+  const { data, error } = await supabase.from('product_type_cn')
+    .select('*')
+
+  if (error) {
+    res.json({
+      code: 400,
+      message: '获取数据失败',
+      data: error
+    })
+  } else {  
+    res.json({    
+      code: 200,
+      message: '获取数据成功',
+      data: data
+    })
+  }
+})
 module.exports = router
