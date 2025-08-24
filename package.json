@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_NO_WARNINGS=1 nodemon index.js",
+    "start": "nodemon index.js",
     "start:no-warnings": "cross-env NODE_NO_WARNINGS=1 nodemon index.js",
     "start:suppress-punycode": "cross-env NODE_NO_WARNINGS=1 node --no-deprecation index.js",
     "start:verbose": "nodemon index.js"
