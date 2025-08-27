@@ -93,6 +93,7 @@ const upload = multer({
 
 router.post('/uploadLibraryImage', verifyToken, upload.single('file'),  async (req, res) => {
   const { file } = req
+  // let fileParse = JSON.parse(file)
   if (!file) {
     return res.status(400).json({
       code: 400,
