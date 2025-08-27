@@ -93,7 +93,6 @@ const upload = multer({
 
 router.post('/uploadLibraryImage', verifyToken, upload.single('file'),  async (req, res) => {
   const { file } = req
-  // console.log(file)
   if (!file) {
     return res.status(400).json({
       code: 400,
@@ -161,4 +160,34 @@ router.get('/getLibraryType', verifyToken, async (req, res) => {
     })
   }
 })
+
+// 新增知识库
+router.post('/addLibrary', verifyToken, async (req, res) => {
+  const {libraryId,libraryTitle, libraryText, libraryTypeValue, libraryTime, libraryAuthor, libraryHtml } = req.body
+
+  const { data, error } = await supabase.from('library_table_cn')
+  .insert({
+    id: libraryId,
+    created_time: libraryTime,
+    author: libraryAuthor,
+    title: libraryTitle,
+    description: libraryText,
+    type: libraryTypeValue,
+    content: libraryHtml,
+  })
+  if (error) {
+    res.json({
+      code: 400,
+      message: '新增失败',
+      data: error
+    })
+  } else {
+    res.json({
+      code: 200,
+      message: '新增成功',
+      data: data
+    })
+  }
+})
+
 module.exports = router
