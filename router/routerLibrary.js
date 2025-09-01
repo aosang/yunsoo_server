@@ -9,6 +9,7 @@ router.get("/Library", verifyToken, async (req, res) => {
 
   const { data, error } = await supabase.from('library_table_cn')
     .select('*')
+    .order('created_time', { ascending: false })
 
   if (error) {
     res.json({
@@ -142,10 +143,11 @@ router.post('/uploadLibraryImage', verifyToken, upload.single('file'),  async (r
   }
 })
 
-// 获取类型
+// 获取类型,并按product_id排序
 router.get('/getLibraryType', verifyToken, async (req, res) => {
   const { data, error } = await supabase.from('product_type_cn')
     .select('*')
+    .order('product_id', { ascending: true })
 
   if (error) {
     res.json({
