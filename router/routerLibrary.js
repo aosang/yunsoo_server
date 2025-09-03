@@ -3,6 +3,7 @@ const supabase = require("../supabase");
 const router = express.Router()
 const { verifyToken } = require("./verifyFun")
 const multer = require("multer")
+const dayjs = require("dayjs")
 
 router.get("/Library", verifyToken, async (req, res) => {
   const { userId } = req.query
@@ -192,5 +193,89 @@ router.post('/addLibrary', verifyToken, async (req, res) => {
     })
   }
 })
+
+// 知识库查询，按发布者查询，按时间查询，按类型查询，按关键字查询，多条件查询
+router.post('/searchLibrary', verifyToken, async (req, res) => {
+  const { searchAuthor, searchTime, searchType, searchKeyword } = req.body
+
+  let todayStart = ""
+  let firstDayOfWeek = ""
+  let currentMonthStart = ""
+  let currentYearStart = ""
+  // 发布者，时间，类型，关键字都包含，进行多条件查询
+  switch (searchTime) {
+    case '1':
+      todayStart = new Date().setHours(0, 0, 0, 0)
+      todayStart = dayjs(todayStart).format('YYYY-MM-DD HH:mm:ss')
+      break
+    case '2':
+      const currentDate = new Date();
+      firstDayOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1))
+      firstDayOfWeek.setHours(0, 0, 0, 0)
+      firstDayOfWeek = dayjs(firstDayOfWeek).format('YYYY-MM-DD HH:mm:ss')
+      break
+    case '3':
+      currentMonthStart = new Date()
+      currentMonthStart.setDate(1)
+      currentMonthStart.setHours(0, 0, 0, 0)
+      currentMonthStart = dayjs(currentMonthStart).format('YYYY-MM-DD HH:mm:ss')
+      break
+    case '4':
+      currentYearStart = new Date()
+      currentYearStart.setMonth(0)
+      currentYearStart.setDate(1)
+      currentYearStart.setHours(0, 0, 0, 0)
+      currentYearStart = dayjs(currentYearStart).format('YYYY-MM-DD HH:mm:ss')
+      break
+  }
+  
+  let query = supabase.from('library_table_cn')
+    .select('*')
+    .ilike('author', `%${searchAuthor}%`)
+
+  // searchTime如果为1按今天查询，2按本周查询，3 按本月查询，4 按本年查询
+  if (searchTime === '1') {
+    query = query.gte('created_time', todayStart).lte('created_time', dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'))
+  } else if (searchTime === '2') {
+    query = query.gte('created_time', firstDayOfWeek).lte('created_time', dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'))
+  } else if (searchTime === '3') {
+    query = query.gte('created_time', currentMonthStart).lte('created_time', dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'))
+  } else if (searchTime === '4') {
+    query = query.gte('created_time', currentYearStart).lte('created_time', dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'))
+  }
+
+  // 分别处理每个搜索条件
+  if (searchType && searchType !== '') {
+    query = query.ilike('type', `%${searchType}%`)
+  }
+  
+  if (searchKeyword && searchKeyword !== '') {
+    query = query.or(`title.ilike.%${searchKeyword}%,description.ilike.%${searchKeyword}%`)
+  }
+  
+  query = query.order('created_time', { ascending: false })
+  
+  
+  // 如果都为空，则查询所有
+  if (searchAuthor === '' && searchTime === '' && searchType === '' && searchKeyword === '') {
+    query = query.order('created_time', { ascending: false })
+  }
+
+  const { data, error } = await query
+    if (error) {
+      res.json({  
+      code: 400,
+      message: '查询失败',
+      data: error
+    })
+  } else {
+    res.json({
+      code: 200,
+      message: '查询成功',
+      data: data
+    })
+  }
+})
+
 
 module.exports = router
