@@ -7,6 +7,7 @@ const routerLogin = require("./router/routerLogin")
 const routerWorkorder = require("./router/routerWorkorder")
 const routerProfile = require("./router/routerProfile")
 const routerLibrary = require("./router/routerLibrary")
+const routerDevice = require("./router/routerDevice")
 
 // 获取本机IPv4地址的函数
 function getLocalIPv4Address() {
@@ -33,6 +34,7 @@ app.use(routerLogin)
 app.use(routerWorkorder)
 app.use(routerProfile)
 app.use(routerLibrary)
+app.use(routerDevice)
 
 const localIP = getLocalIPv4Address();
 app.listen(port, localIP, () => {
