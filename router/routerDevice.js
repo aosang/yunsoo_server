@@ -98,7 +98,7 @@ router.post('/AddDevice', verifyToken, async (req, res) => {
     product_name: device_name,
     product_type: device_type,
     product_brand: device_brand,
-    product_price: device_price,
+    product_unitprice: device_price,
     product_number: device_number,
     product_remark: device_remark,
     product_time: device_time,
@@ -118,6 +118,30 @@ router.post('/AddDevice', verifyToken, async (req, res) => {
     res.json({
       code: 200,
       message: '新增成功',
+      data: data
+    })
+  }
+})
+
+// 获取详情
+router.post('/GetDeviceDetail', verifyToken, async (req, res) => {
+  const { deviceId } = req.body
+
+  const {data, error} = await supabase.from('it_assets_cn')
+  .select('*')
+  .eq('id', deviceId)
+
+  if (error) {
+    res.json({
+      code: 400,
+      message: '获取数据失败',
+      data: error
+    })
+  }
+  else {
+    res.json({
+      code: 200,
+      message: '获取数据成功',
       data: data
     })
   }
