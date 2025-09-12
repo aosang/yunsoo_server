@@ -91,15 +91,16 @@ router.get('/DeviceBrand', verifyToken, async (req, res) => {
 
 // 新增设备
 router.post('/AddDevice', verifyToken, async (req, res) => {
-  const { device_name, device_type, device_brand, device_price, device_number, device_remark, device_time, device_update, device_user, device_logo } = req.body
+  const { device_name, device_type, device_brand, device_price, device_number, device_total, device_remark, device_time, device_update, device_user, device_logo } = req.body
   
   const {data, error} = await supabase.from('it_assets_cn')
   .insert({
     product_name: device_name,
     product_type: device_type,
     product_brand: device_brand,
-    product_unitprice: device_price,
+    product_unitprice: parseFloat(device_price),
     product_number: device_number,
+    product_price: parseFloat(device_total),
     product_remark: device_remark,
     product_time: device_time,
     product_user: device_user,
